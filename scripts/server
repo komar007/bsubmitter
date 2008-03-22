@@ -1,0 +1,24 @@
+#!/bin/bash
+
+read cmd login hash
+
+if [[ -z $login ]]; then
+	exit
+fi
+if [[ -z $hash ]]; then
+	exit
+fi
+
+if [[ $cmd == 'CREATE' ]]; then
+	../lib/useradd $login $hash hash
+else
+	if [[ $cmd == 'LOGIN' ]]; then
+		if [[ `../lib/authorize $login $hash` == 'ok' ]]; then
+			../lib/user_shell
+		else
+			echo Authentication error
+		fi
+	else
+		echo Protocol error
+	fi
+fi

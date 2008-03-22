@@ -16,7 +16,11 @@ fi
 
 pass=x
 if [[ -n $2 ]]; then
-	pass=`../lib/hash $2`
+	if [[ -z $3 ]]; then
+		pass=`../lib/hash $2`
+	else
+		pass=$2;
+	fi
 fi
 
 echo $user:$pass >> ../users/passwd
