@@ -11,26 +11,6 @@ if [[ -z $1 ]]; then
 fi
 
 user=$1
+pass=$2
 
-if [[ `../lib/correct "$user"` == "nie" ]]; then
-	echo Incorrect username\!
-	exit 1
-fi
-	
-touch ../users/passwd
-
-if [[ `grep $1 ../users/passwd` ]]; then
-	echo User already exists\!
-	exit 1
-fi
-
-pass=x
-if [[ -n $2 ]]; then
-	pass=`../lib/hash $2`
-fi
-
-echo $user:$pass >> ../users/passwd
-
-mkdir -p ../users/homes/$user
-touch ../users/homes/$user/submissions
-./genconfig
+../lib/useradd $user $pass

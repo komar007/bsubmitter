@@ -12,13 +12,4 @@ fi
 
 user=$1
 
-if [[ `grep $user ../users/passwd` ]]; then
-	grep -v $user ../users/passwd > ../users/.passwd
-	mv ../users/.passwd ../users/passwd
-else
-	echo No such user\!
-	exit 1
-fi
-
-rm -fr ../users/homes/$user
-./genconfig
+../lib/userdel $user

@@ -9,7 +9,7 @@ function usage()
 	echo "is correct, or 'err' otherwise."
 	echo "Your tester will be given 3 arguments: input data, output data and program's solution file "
 	echo "Output data is the .out file of a test and can be used to pass the tester"
-	echo "infomation about the test."
+	echo "any infomation or additional data to the test if this can help improve performance."
 }
 
 if [[ -z $1 ]]; then
