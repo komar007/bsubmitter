@@ -3,9 +3,11 @@
 read cmd login hash
 
 if [[ -z $login ]]; then
+	echo Protocol error
 	exit
 fi
 if [[ -z $hash ]]; then
+	echo Protocol error
 	exit
 fi
 
