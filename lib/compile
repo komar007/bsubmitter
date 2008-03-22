@@ -1,0 +1,14 @@
+#!/bin/bash
+
+. ../config.gen
+
+user=$1
+task=$2
+
+lang=`egrep "^$task:" ../users/homes/$user/submissions | awk -F: '//{printf("%s\n", $2)}'`
+
+dir=../users/homes/$user/$task
+
+cmd=$(./get_var compile_${lang}_cmd | sed "{s|{exe}|$dir/$task.e|};{s|{src}|$dir/$task|}")
+
+$cmd

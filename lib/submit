@@ -1,0 +1,25 @@
+#!/bin/bash
+
+function usage()
+{
+	echo "Usage: ./submit username task_code language"
+}
+
+if [[ $# != 3 ]]; then
+	usage
+	exit 1
+fi
+
+user=$1
+task=$2
+lang=$3
+
+file=../users/homes/$user/$task/$task.$lang
+
+mkdir -p ../users/homes/$user/$task
+cat  > $file
+
+touch ../users/homes/$user/submissions
+cat ../users/homes/$user/submissions | egrep -v "^$task:" > ../users/homes/$user/.submissions
+echo $task:$lang:`date +%s`:- >> ../users/homes/$user/.submissions
+mv ../users/homes/$user/.submissions ../users/homes/$user/submissions

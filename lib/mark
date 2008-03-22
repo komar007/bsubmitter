@@ -1,0 +1,56 @@
+#!/bin/bash
+
+# Uses ./run_test to run a single test and checks for correctness.
+# Sets $testname.err if the answer is wrong, or leaves it as it was.
+# Returns number of points or error code if one occured.
+
+. ../config.gen
+
+user=$1
+task=$2
+testname=$3
+limit=`./get_var ${task}_limits_${testname}`
+maxpoints=`./get_var ${task}_points_${testname}`
+
+timefile=../users/homes/$user/$task/$testname.time
+pointfile=../users/homes/$user/$task/$testname.points
+
+in=../tasks/$task/in/$testname.in
+out=../tasks/$task/out/$testname.out
+sol=../users/homes/$user/$task/$testname.sol
+err=../users/homes/$user/$task/$testname.err
+
+if [[ `./get_var ${task}_use_tester` == "1" ]]; then
+	tester=../tasks/$task/tester
+else
+	tester=./default_tester
+fi
+
+if [[ `./run_test $user $task $testname $limit | egrep '^[0-9]'` ]]; then
+	t=`awk -F/ '//{printf("%s\n", $1)}' $timefile`
+	p=`echo "$maxpoints - (($t - $limit/2) * $maxpoints / ($limit/2))" | bc -l | awk -F. '/[0-9]+\.[1-9][0-9]+/{printf("%i\n", $1 + 1)}; /[0-9]+\.0[0-9]+/{printf("%i\n", $1)}; /[0-9]+$/{printf("%i\n", $1)}'`
+	if [[ `echo $p '>' $maxpoints | bc -l` == "1" ]]; then
+		p=$maxpoints
+	fi
+	if [[ `echo $p '<' 0 | bc -l` == "1" ]]; then
+		p=1
+	fi
+
+	# Check for correctness
+	if [[ `$tester $in $out $sol` == "err" ]]; then
+		p=0
+		echo WA
+		echo WA > $err
+	else
+		echo $p/$maxpoints
+	fi
+else
+	cat $err
+	p=0
+fi
+
+echo $p/$maxpoints > $pointfile
+
+if [[ ! $keep_outputs == 1 ]]; then
+	rm -fr $sol
+fi

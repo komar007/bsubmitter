@@ -1,0 +1,86 @@
+#!/bin/bash
+
+function usage()
+{
+	echo "Usage: ./addtask task_name [memory_limit(kb)] [tester]"
+	echo "If the third argument is present, task will use your own program"
+	echo "to check solutions. The program has to be executable,"
+	echo "reside in tasks/\$task_name/tester, and output 'ok' if the solution"
+	echo "is correct, or 'err' otherwise."
+	echo "Your tester will be given 3 arguments: input data, output data and program's solution file "
+	echo "Output data is the .out file of a test and can be used to pass the tester"
+	echo "infomation about the test."
+}
+
+if [[ -z $1 ]]; then
+	usage
+	exit 1
+fi
+
+task=$1
+
+if [[ -n `egrep "^tasks=" ../config | egrep -o "=.+" | egrep -o "[^'\"]+" | grep $task` ]]; then
+	echo "Task already exists!"
+	exit 1
+fi
+
+if [[ -n $2 ]]; then
+	memlimit=$2
+else
+	read -p "Memory limit [kb]: " memlimit
+fi
+
+if [[ -n $3 ]]; then
+	tester=1
+else
+	tester=0
+fi
+
+read -p "Tests' names, in order [space separated]: " tests
+read -p "Time limits for tests, in order: " limits
+read -p "Max. number of points for each test: " points
+
+read -p "Pretests' names, in order [space separated]: " pretests
+read -p "Time limits for pretests, in order: " prelimits
+
+pretests=`for a in $pretests; do echo -n "p$a ";done`
+
+if [[ -z $3 ]]; then
+	read -p "Do you want to use your own tester? " t
+	if [[ $t == "yes" || $t == "y" ]]; then
+		tester=1
+	else
+		tester=0
+	fi
+fi
+
+config=../tasks/$task/tests.conf
+mkdir -p ../tasks/$task/in ../tasks/$task/out
+
+read -p "Do you want to have empty files generated for all the tests? " gen
+if [[ $gen == "y" || $gen == "yes" ]]; then
+	for t in $tests; do 
+		touch ../tasks/$task/in/$t.in
+		touch ../tasks/$task/out/$t.out
+	done
+
+	for t in $pretests; do 
+		touch ../tasks/$task/in/$t.in
+		touch ../tasks/$task/out/$t.out
+	done
+fi
+
+echo "mem_limit=$memlimit" > $config
+echo "tests=\"$tests\"" >> $config
+echo "tests_limits=\"$limits\"" >> $config
+echo "tests_points=\"$points\"" >> $config
+echo "pretests=\"$pretests\"" >> $config
+echo "pretests_limits=\"$prelimits\"" >> $config
+echo "use_tester=$tester" >> $config
+
+cat ../config | sed "{s|^tasks=.*|tasks=\\\"$(cat ../config | egrep "^tasks=" | egrep -o "=.*" | egrep -o "[^='\"]+") $task\\\"|}" > ../.config
+mv ../.config ../config
+
+(echo -e "#!/bin/bash\n# Change this to your own tester for the task ${task}!" && tail -n $((`cat ../lib/default_tester|wc -l` - 1)) ../lib/default_tester) > ../tasks/$task/tester
+chmod +x ../tasks/$task/tester
+./genconfig

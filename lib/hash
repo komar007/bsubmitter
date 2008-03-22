@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo $(basename "`echo -en $1|sha1sum`" ' -')
+

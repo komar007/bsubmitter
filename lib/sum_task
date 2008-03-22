@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Puts results from all tests into one file
+
+user=$1
+task=$2
+
+tests=
+
+if [[ $3 == "pretests" || $3 == "all" ]]; then
+	tests=`./get_var ${task}_pretests`
+fi
+if [[ $3 == "tests" || $3 == "all" ]]; then
+	tests="$tests `./get_var ${task}_tests`"
+fi
+
+score=0
+maxscore=0
+
+echo -n > ../users/homes/$user/$task/results
+for test in $tests; do
+	msg=`cat ../users/homes/$user/$task/$test.err`	
+	time=`cat ../users/homes/$user/$task/$test.time`
+	points=`cat ../users/homes/$user/$task/$test.points`
+	score=$(($score + `echo $points | awk -F/ '//{printf("%i\n", $1)}'`))
+	maxscore=$(($maxscore + `echo $points | awk -F/ '//{printf("%i\n", $2)}'`))
+	echo ${test}:${msg}:${time}:${points} >> ../users/homes/$user/$task/results
+done
+
+awk -F: "!/^$task:/{print \$0}; /^$task:/{printf(\"%s:%s:%s:%s\n\", \$1, \$2, \$3, \"$score/$maxscore\")}" ../users/homes/$user/submissions > ../users/homes/$user/.submissions
+mv ../users/homes/$user/.submissions ../users/homes/$user/submissions
+
+

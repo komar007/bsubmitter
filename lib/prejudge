@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Runs all pretests ona single task
+
+. ../config.gen
+
+user=$1
+task=$2
+
+for test in `./get_var ${task}_pretests`; do
+	./mark $user $task $test 
+done

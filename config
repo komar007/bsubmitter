@@ -1,0 +1,7 @@
+langs="c cpp pas"
+compile_c_cmd="gcc -O2 -lm -static -o {exe} {src}.c"
+compile_cpp_cmd="g++ -O2 -lm -static -o {exe} {src}.cpp"
+compile_pas_cmd="fpc -o{exe} {src}.pas"
+keep_outputs=1
+
+tasks="lab tro abc qwe hjk"

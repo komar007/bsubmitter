@@ -1,0 +1,29 @@
+#!/bin/bash
+
+. ../config
+
+cat ../config > ../config.gen
+
+for task in $tasks; do
+	cat ../tasks/$task/tests.conf | sed "{s/^/${task}_/}" >> ../config.gen
+
+	echo ${task}_pretests_points=\"$(for pretest in `../lib/get_var ${task}_pretests`; do echo -n "0 "; done)\" >> ../config.gen
+
+	for kind in tests pretests; do 
+		for what in limits points; do
+			../lib/get_var ${task}_${kind}_${what} > ../.tmp
+			vars=$(for var in `../lib/get_var ${task}_${kind}`; do echo -n "${task}_${what}_${var} "; done) 
+			read $vars < ../.tmp
+			export $vars
+			for var in $vars; do
+				echo ${var}=\"${!var}\" >> ../config.gen
+			done
+			rm -fr ../.tmp
+		done
+	done
+
+	echo users=\"`awk -F: '//{printf("%s ", $1)}' ../users/passwd`\" >> ../config.gen
+
+done
+
+

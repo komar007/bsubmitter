@@ -1,0 +1,10 @@
+#!/bin/bash
+
+. ../config.gen
+
+for user in $users; do
+	submissions=`awk -F: '//{printf("%s ", $1)}' ../users/homes/$user/submissions`
+	for sub in $submissions; do
+		echo $user, $sub
+	done
+done

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+data=$1
+out=$2
+sol=$3
+
+if [[ `diff $out $sol` ]]; then
+	echo err
+else
+	echo ok
+fi
