@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Runs all pretests ona single task
+# Runs all pretests on a single task
 
 . ../config.gen
 

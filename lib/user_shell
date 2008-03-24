@@ -1,5 +1,22 @@
 #!/bin/bash
 
-echo wpisz
-read x
-echo alala $x
+user=$1
+home=../users/homes/$user
+
+
+read method path
+
+case $method in
+	'GET')
+	case $path in 
+		"status")
+		cat $home/submissions  
+		;;
+	esac
+	false
+	;;
+	'POST')
+	echo post
+	false
+	;;
+esac && echo Method unsupported

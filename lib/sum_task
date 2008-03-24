@@ -27,6 +27,8 @@ for test in $tests; do
 	echo ${test}:${msg}:${time}:${points} >> ../users/homes/$user/$task/results
 done
 
+
+# TODO: write OK/ERR instead of points if $3 = 'pretests'
 awk -F: "!/^$task:/{print \$0}; /^$task:/{printf(\"%s:%s:%s:%s\n\", \$1, \$2, \$3, \"$score/$maxscore\")}" ../users/homes/$user/submissions > ../users/homes/$user/.submissions
 mv ../users/homes/$user/.submissions ../users/homes/$user/submissions
 

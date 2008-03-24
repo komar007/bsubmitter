@@ -16,7 +16,7 @@ if [[ $cmd == 'CREATE' ]]; then
 else
 	if [[ $cmd == 'LOGIN' ]]; then
 		if [[ `../lib/authorize $login $hash` == 'ok' ]]; then
-			../lib/user_shell
+			../lib/user_shell $login
 		else
 			echo Authentication error
 		fi
