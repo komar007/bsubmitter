@@ -1,0 +1,7 @@
+#!/bin/bash
+
+PORT=2000
+
+for((;;)) do 
+	nc -l -p $PORT -c ./root/scripts/server
+done

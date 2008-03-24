@@ -19,7 +19,7 @@ fi
 
 task=$1
 
-if [[ -n `egrep "^tasks=" ../config | egrep -o "=.+" | egrep -o "[^'\"]+" | grep $task` ]]; then
+if [[ -n `egrep "^tasks=" ./root/config | egrep -o "=.+" | egrep -o "[^'\"]+" | grep $task` ]]; then
 	echo "Task already exists!"
 	exit 1
 fi
@@ -54,19 +54,19 @@ if [[ -z $3 ]]; then
 	fi
 fi
 
-config=../tasks/$task/tests.conf
-mkdir -p ../tasks/$task/in ../tasks/$task/out
+config=./root/tasks/$task/tests.conf
+mkdir -p ./root/tasks/$task/in ./root/tasks/$task/out
 
 read -p "Do you want to have empty files generated for all the tests? " gen
 if [[ $gen == "y" || $gen == "yes" ]]; then
 	for t in $tests; do 
-		touch ../tasks/$task/in/$t.in
-		touch ../tasks/$task/out/$t.out
+		touch ./root/tasks/$task/in/$t.in
+		touch ./root/tasks/$task/out/$t.out
 	done
 
 	for t in $pretests; do 
-		touch ../tasks/$task/in/$t.in
-		touch ../tasks/$task/out/$t.out
+		touch ./root/tasks/$task/in/$t.in
+		touch ./root/tasks/$task/out/$t.out
 	done
 fi
 
@@ -78,9 +78,9 @@ echo "pretests=\"$pretests\"" >> $config
 echo "pretests_limits=\"$prelimits\"" >> $config
 echo "use_tester=$tester" >> $config
 
-cat ../config | sed "{s|^tasks=.*|tasks=\\\"$(cat ../config | egrep "^tasks=" | egrep -o "=.*" | egrep -o "[^='\"]+") $task\\\"|}" > ../.config
-mv ../.config ../config
+cat ./root/config | sed "{s|^tasks=.*|tasks=\\\"$(cat ./root/config | egrep "^tasks=" | egrep -o "=.*" | egrep -o "[^='\"]+") $task\\\"|}" > ./root/.config
+mv ./root/.config ./root/config
 
-(echo -e "#!/bin/bash\n# Change this to your own tester for the task ${task}!" && tail -n $((`cat ../lib/default_tester|wc -l` - 1)) ../lib/default_tester) > ../tasks/$task/tester
-chmod +x ../tasks/$task/tester
-./genconfig
+(echo -e "#!/bin/bash\n# Change this to your own tester for the task ${task}!" && tail -n $((`cat ./root/lib/default_tester|wc -l` - 1)) ./root/lib/default_tester) > ./root/tasks/$task/tester
+chmod +x ./root/tasks/$task/tester
+./root/scripts/genconfig

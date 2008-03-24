@@ -14,12 +14,12 @@ user=$1
 task=$2
 lang=$3
 
-file=../users/homes/$user/$task/$task.$lang
+file=./root/users/homes/$user/$task/$task.$lang
 
-mkdir -p ../users/homes/$user/$task
+mkdir -p ./root/users/homes/$user/$task
 cat  > $file
 
-touch ../users/homes/$user/submissions
-cat ../users/homes/$user/submissions | egrep -v "^$task:" > ../users/homes/$user/.submissions
-echo $task:$lang:`date +%s`:- >> ../users/homes/$user/.submissions
-mv ../users/homes/$user/.submissions ../users/homes/$user/submissions
+touch ./root/users/homes/$user/submissions
+cat ./root/users/homes/$user/submissions | egrep -v "^$task:" > ./root/users/homes/$user/.submissions
+echo $task:$lang:`date +%s`:- >> ./root/users/homes/$user/.submissions
+mv ./root/users/homes/$user/.submissions ./root/users/homes/$user/submissions

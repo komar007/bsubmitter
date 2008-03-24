@@ -3,11 +3,11 @@
 user=$1
 hash=$2
 
-if [[ `../lib/correct $user` == 'nie' ]]; then
+if [[ ` ./root/lib/correct $user` == 'nie' ]]; then
 	echo err
 	exit
 fi
-if [[ `awk -F: '/^'$user':/ {print $2}' ../users/passwd` == $hash ]]; then
+if [[ `awk -F: '/^'$user':/ {print $2}' ./root/users/passwd` == $hash ]]; then
 	echo ok
 else
 	echo err

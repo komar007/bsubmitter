@@ -1,3 +1,3 @@
 #!/bin/bash
 
-cat ../config.gen | egrep "^$1=" | egrep -o '=.*' | egrep -o "[^='\"]+"
+cat ./root/config.gen | egrep "^$1=" | egrep -o '=.*' | egrep -o "[^='\"]+"

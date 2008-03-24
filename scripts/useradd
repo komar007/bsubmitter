@@ -13,4 +13,4 @@ fi
 user=$1
 pass=$2
 
-../lib/useradd $user $pass
+./root/lib/useradd $user $pass

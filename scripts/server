@@ -12,11 +12,11 @@ if [[ -z $hash ]]; then
 fi
 
 if [[ $cmd == 'CREATE' ]]; then
-	../lib/useradd $login $hash hash
+	./root/lib/useradd $login $hash hash
 else
 	if [[ $cmd == 'LOGIN' ]]; then
-		if [[ `../lib/authorize $login $hash` == 'ok' ]]; then
-			../lib/user_shell $login
+		if [[ `./root/lib/authorize $login $hash` == 'ok' ]]; then
+			./root/lib/user_shell $login
 		else
 			echo Authentication error
 		fi

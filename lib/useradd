@@ -2,14 +2,14 @@
 
 user=$1
 
-if [[ `../lib/correct "$user"` == "nie" ]]; then
+if [[ `./root/lib/correct "$user"` == "nie" ]]; then
 	echo Incorrect username\!
 	exit 1
 fi
 	
-touch ../users/passwd
+touch ./root/users/passwd
 
-if [[ `grep $1 ../users/passwd` ]]; then
+if [[ `grep $1 ./root/users/passwd` ]]; then
 	echo User already exists\!
 	exit 1
 fi
@@ -17,14 +17,14 @@ fi
 pass=x
 if [[ -n $2 ]]; then
 	if [[ -z $3 ]]; then
-		pass=`../lib/hash $2`
+		pass=`./root/lib/hash $2`
 	else
 		pass=$2;
 	fi
 fi
 
-echo $user:$pass >> ../users/passwd
+echo $user:$pass >> ./root/users/passwd
 
-mkdir -p ../users/homes/$user
-touch ../users/homes/$user/submissions
-./genconfig
+mkdir -p ./root/users/homes/$user
+touch ./root/users/homes/$user/submissions
+./root/scripts/genconfig

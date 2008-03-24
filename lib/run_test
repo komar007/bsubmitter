@@ -6,20 +6,20 @@
 # in $testname.time
 # Returns execution time if no error occured or error code otherwise.
 
-. ../config.gen
+. ./root/config.gen
 
 user=$1
 task=$2
 testname=$3
 limit=$4
 
-exe=../users/homes/$user/$task/$task.e
-in=../tasks/$task/in/$testname.in
-output=../users/homes/$user/$task/$testname.sol
-timefile=../users/homes/$user/$task/$testname.time
-errfile=../users/homes/$user/$task/$testname.err
+exe=./root/users/homes/$user/$task/$task.e
+in=./root/tasks/$task/in/$testname.in
+output=./root/users/homes/$user/$task/$testname.sol
+timefile=./root/users/homes/$user/$task/$testname.time
+errfile=./root/users/homes/$user/$task/$testname.err
 
-(/usr/bin/time -p $exe < $in > $output 2> ./.t ; sleep 0.1; killall -q sleep) &
+(/usr/bin/time -p $exe < $in > $output 2> ./root/lib/.t ; sleep 0.1; killall -q sleep) &
 #(/usr/bin/time -p sleep 3 2> ./.t ; killall sleep) &
 pid=`jobs -p %+`
 if [[ `sleep $limit && /bin/kill $pid && echo a` ]]; then 
@@ -28,8 +28,8 @@ if [[ `sleep $limit && /bin/kill $pid && echo a` ]]; then
 	echo TL
 	exit 1
 fi
-echo `grep real ./.t | egrep -o '[^a-z ]+'`/$limit > $timefile
-rm -fr ./.t
+echo `grep real ./root/lib/.t | egrep -o '[^a-z ]+'`/$limit > $timefile
+rm -fr ./root/lib/.t
 echo "OK" > $errfile
 cat $timefile 
 

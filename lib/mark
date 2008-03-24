@@ -4,29 +4,29 @@
 # Sets $testname.err if the answer is wrong, or leaves it as it was.
 # Returns number of points or error code if one occured.
 
-. ../config.gen
+. ./root/config.gen
 
 user=$1
 task=$2
 testname=$3
-limit=`./get_var ${task}_limits_${testname}`
-maxpoints=`./get_var ${task}_points_${testname}`
+limit=`./root/lib/get_var ${task}_limits_${testname}`
+maxpoints=`./root/lib/get_var ${task}_points_${testname}`
 
-timefile=../users/homes/$user/$task/$testname.time
-pointfile=../users/homes/$user/$task/$testname.points
+timefile=./root/users/homes/$user/$task/$testname.time
+pointfile=./root/users/homes/$user/$task/$testname.points
 
-in=../tasks/$task/in/$testname.in
-out=../tasks/$task/out/$testname.out
-sol=../users/homes/$user/$task/$testname.sol
-err=../users/homes/$user/$task/$testname.err
+in=./root/tasks/$task/in/$testname.in
+out=./root/tasks/$task/out/$testname.out
+sol=./root/users/homes/$user/$task/$testname.sol
+err=./root/users/homes/$user/$task/$testname.err
 
-if [[ `./get_var ${task}_use_tester` == "1" ]]; then
-	tester=../tasks/$task/tester
+if [[ `./root/lib/get_var ${task}_use_tester` == "1" ]]; then
+	tester=./root/tasks/$task/tester
 else
-	tester=./default_tester
+	tester=./root/lib/default_tester
 fi
 
-if [[ `./run_test $user $task $testname $limit | egrep '^[0-9]'` ]]; then
+if [[ `./root/lib/run_test $user $task $testname $limit | egrep '^[0-9]'` ]]; then
 	t=`awk -F/ '//{printf("%s\n", $1)}' $timefile`
 	p=`echo "$maxpoints - (($t - $limit/2) * $maxpoints / ($limit/2))" | bc -l | awk -F. '/[0-9]+\.[1-9][0-9]+/{printf("%i\n", $1 + 1)}; /[0-9]+\.0[0-9]+/{printf("%i\n", $1)}; /[0-9]+$/{printf("%i\n", $1)}'`
 	if [[ `echo $p '>' $maxpoints | bc -l` == "1" ]]; then
