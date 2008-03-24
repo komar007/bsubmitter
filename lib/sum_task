@@ -5,18 +5,22 @@
 user=$1
 task=$2
 
-tests=
+tests= 
 
 if [[ $3 == "pretests" || $3 == "all" ]]; then
 	tests=`./get_var ${task}_pretests`
-fi
-if [[ $3 == "tests" || $3 == "all" ]]; then
-	tests="$tests `./get_var ${task}_tests`"
+else 
+	if [[ $3 == "tests" || $3 == "all" ]]; then
+		tests="$tests `./get_var ${task}_tests`"
+	else
+		exit
+	fi
 fi
 
 score=0
 maxscore=0
 
+whole_ok=1
 echo -n > ../users/homes/$user/$task/results
 for test in $tests; do
 	msg=`cat ../users/homes/$user/$task/$test.err`	
@@ -25,11 +29,23 @@ for test in $tests; do
 	score=$(($score + `echo $points | awk -F/ '//{printf("%i\n", $1)}'`))
 	maxscore=$(($maxscore + `echo $points | awk -F/ '//{printf("%i\n", $2)}'`))
 	echo ${test}:${msg}:${time}:${points} >> ../users/homes/$user/$task/results
+	if [[ $msg != 'OK' ]];then
+		whole_ok=0
+	fi
 done
 
 
-# TODO: write OK/ERR instead of points if $3 = 'pretests'
-awk -F: "!/^$task:/{print \$0}; /^$task:/{printf(\"%s:%s:%s:%s\n\", \$1, \$2, \$3, \"$score/$maxscore\")}" ../users/homes/$user/submissions > ../users/homes/$user/.submissions
-mv ../users/homes/$user/.submissions ../users/homes/$user/submissions
+if [[ $3 == "tests" ]]; then
+	stat=$score/$maxscore
+else
+	if [[ $whole_ok == 1 ]]; then
+		stat=OK
+	else
+		stat=ERR
+	fi
+fi
+
+subm=$(awk -F: "!/^$task:/{print \$0}; /^$task:/{printf(\"%s:%s:%s:%s\n\", \$1, \$2, \$3, \"$stat\")}" ../users/homes/$user/submissions)
+echo $subm > ../users/homes/$user/submissions
 
 
